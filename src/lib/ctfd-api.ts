@@ -45,7 +45,6 @@ export class CTFDApiClient {
         method: 'GET',
         headers,
         credentials: 'omit',
-        cache: 'no-cache',
         mode: isDevelopment ? 'same-origin' : 'cors',
       });
       
