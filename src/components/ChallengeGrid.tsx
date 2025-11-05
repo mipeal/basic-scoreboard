@@ -3,7 +3,7 @@ import { useScoreboardStore } from '../store/useScoreboardStore';
 import { Flag, Check, Lock, Users } from 'lucide-react';
 
 export function ChallengeGrid() {
-  const { challenges, solves, submissions, isLoading } = useScoreboardStore();
+  const { challenges, solves, submissions } = useScoreboardStore();
 
   const getChallengeStats = (challengeId: number) => {
     // Get the challenge object
@@ -44,17 +44,12 @@ export function ChallengeGrid() {
 
   const categories = Array.from(new Set(challenges.map(c => c.category)));
 
-  if (isLoading && challenges.length === 0) {
+  if (challenges.length === 0) {
     return (
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-700 rounded w-1/3" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-700 rounded" />
-            ))}
-          </div>
-        </div>
+      <div className="bg-gray-800 rounded-xl p-12 text-center text-gray-500 border border-gray-700">
+        <Flag className="w-12 h-12 mx-auto mb-4 opacity-50" />
+        <p>No challenges available</p>
+        <p className="text-xs mt-2">Data will load automatically...</p>
       </div>
     );
   }
@@ -155,10 +150,11 @@ export function ChallengeGrid() {
         );
       })}
 
-      {challenges.length === 0 && !isLoading && (
+      {challenges.length === 0 && (
         <div className="bg-gray-800 rounded-xl p-12 border border-gray-700 text-center">
           <Flag className="w-12 h-12 mx-auto mb-4 text-gray-600" />
           <p className="text-gray-500">No challenges available</p>
+          <p className="text-xs mt-2 text-gray-600">Data will load automatically...</p>
         </div>
       )}
     </div>

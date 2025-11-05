@@ -24,15 +24,11 @@ export function LoginForm() {
         throw new Error('Please provide both instance URL and API key');
       }
 
-      setDebugInfo(`Connecting to: ${instanceUrl}\nAPI Key: ${apiKey.substring(0, 10)}...\n\n✅ Credentials saved! Loading dashboard...`);
+      setDebugInfo(`Saving credentials...\nURL: ${instanceUrl}\nAPI Key: ${apiKey.substring(0, 10)}...\n\nSkipping connection test - trusting your credentials.\nData will be loaded after login.`);
 
-      // Skip connection test - just trust the credentials
-      // The app will attempt to fetch data once logged in
-      // If credentials are wrong, errors will show in the dashboard
-      
-      // Save config immediately
+      // Save config without testing - trust the user
       setConfig({ instanceUrl, apiKey });
-      setDebugInfo(prev => prev + '\n\n🎉 Connected! Redirecting to dashboard...');
+      setDebugInfo(prev => prev + '\n\n🎉 Credentials saved! Loading dashboard...');
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {
@@ -102,7 +98,7 @@ export function LoginForm() {
               </p>
               {instanceUrl && (
                 <p className="text-xs text-blue-400 mt-1">
-                  🔒 {import.meta.env.DEV ? 'Using proxy for CORS bypass (dev mode)' : 'Direct API connection (ensure CORS is enabled)'}
+                  🔒 {import.meta.env.DEV ? 'Using dev proxy' : 'Direct connection'} to CTFd instance
                 </p>
               )}
             </div>
@@ -184,14 +180,17 @@ export function LoginForm() {
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
-            <h4 className="text-sm font-medium text-yellow-400 mb-2">Important Notes:</h4>
+          <div className="mt-6 p-4 bg-blue-900/20 border border-blue-700 rounded-lg">
+            <h4 className="text-sm font-medium text-blue-400 mb-2">Connection Info:</h4>
             <p className="text-xs text-gray-400 mb-2">
-              No login verification - credentials are trusted immediately.
+              • <strong>Development:</strong> Uses local proxy to bypass CORS<br/>
+              • <strong>Production:</strong> Direct connection to your CTFd instance<br/>
+              • No connection test - credentials are trusted on save
             </p>
             <ul className="text-xs text-gray-400 space-y-1 ml-2">
-              <li>• If data fails to load, check browser console for errors</li>
-              <li>• Try Demo Mode to test the interface without API access</li>
+              <li>• Make sure your CTFd instance has CORS enabled for production</li>
+              <li>• API key must have read permissions for all endpoints</li>
+              <li>• Errors will show after data loading attempts</li>
             </ul>
           </div>
 

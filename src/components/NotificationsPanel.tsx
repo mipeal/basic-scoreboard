@@ -51,8 +51,9 @@ export function NotificationsPanel() {
   const recentNotifications = notifications.slice(0, 10);
 
   return (
-    <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-      <div className="p-6 border-b border-gray-700">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -81,7 +82,10 @@ export function NotificationsPanel() {
         </div>
       </div>
 
-      <div className="max-h-[500px] overflow-y-auto">
+      {/* Notifications List */}
+      {notifications.length > 0 ? (
+        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+          <div className="max-h-[500px] overflow-y-auto">
         <AnimatePresence>
           {recentNotifications.map((notification) => (
             <motion.div
@@ -119,10 +123,10 @@ export function NotificationsPanel() {
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
-
-      {notifications.length === 0 && (
-        <div className="p-12 text-center text-gray-500">
+        </div>
+        </div>
+      ) : (
+        <div className="bg-gray-800 rounded-xl p-12 text-center text-gray-500 border border-gray-700">
           <Bell className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>No notifications yet</p>
         </div>

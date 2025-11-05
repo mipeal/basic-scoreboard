@@ -4,7 +4,7 @@ import { Trophy, TrendingUp, TrendingDown, Medal, Crown } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 export function Scoreboard() {
-  const { scoreboard, rankChanges, isLoading, lastUpdate } = useScoreboardStore();
+  const { scoreboard, rankChanges, lastUpdate } = useScoreboardStore();
 
   // Get rank change for a specific user
   const getRankChange = (accountId: number) => {
@@ -18,28 +18,6 @@ export function Scoreboard() {
   // Split into top 3 and rest
   const topThree = scoreboard.slice(0, 3);
   const restOfTeams = scoreboard.slice(3);
-
-  if (isLoading && scoreboard.length === 0) {
-    return (
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-yellow-500" />
-            <h2 className="text-2xl font-bold text-white">Leaderboard</h2>
-          </div>
-          <div className="flex items-center gap-2 text-blue-400">
-            <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm">Loading...</span>
-          </div>
-        </div>
-        <div className="animate-pulse space-y-4">
-          {[...Array(10)].map((_, i) => (
-            <div key={i} className="h-12 bg-gray-700 rounded" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -221,12 +199,12 @@ export function Scoreboard() {
         </div>
       )}
 
-      {/* Rest of the teams in table format */}
+      {/* Rest of leaderboard */}
       {restOfTeams.length > 0 && (
         <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-900/50">
+              <thead className="bg-gray-700/50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Rank
@@ -305,10 +283,11 @@ export function Scoreboard() {
         </div>
       )}
 
-      {scoreboard.length === 0 && !isLoading && (
+      {scoreboard.length === 0 && (
         <div className="bg-gray-800 rounded-xl p-12 text-center text-gray-500 border border-gray-700">
           <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>No scoreboard data available</p>
+          <p className="text-xs mt-2">Data will load automatically...</p>
         </div>
       )}
     </div>

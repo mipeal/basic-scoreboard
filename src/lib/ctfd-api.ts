@@ -18,9 +18,10 @@ export class CTFDApiClient {
   }
 
   private async makeRequest<T>(endpoint: string): Promise<T> {
-    // Use proxy in development, direct API calls in production
+    // Use proxy in development, direct calls in production
     const isDevelopment = import.meta.env.DEV;
     
+    // Build the URL based on environment
     const url = isDevelopment 
       ? `/ctfd-api/api/v1${endpoint}` // Development: use Vite dev server proxy
       : `${this.instanceUrl}/api/v1${endpoint}`; // Production: direct API call
@@ -32,12 +33,12 @@ export class CTFDApiClient {
       'Cache-Control': 'no-cache',
     };
 
-    // Add X-CTFd-URL header only for proxy requests in development
+    // Add X-CTFd-URL header only for development proxy
     if (isDevelopment) {
       headers['X-CTFd-URL'] = this.instanceUrl;
     }
 
-    console.log(`Making fetch request to: ${url} (${isDevelopment ? 'via proxy' : 'direct'})`);
+    console.log(`Making fetch request to: ${url} (${isDevelopment ? 'dev proxy' : 'direct'})`);
     
     try {
       const response = await fetch(url, {
@@ -105,6 +106,7 @@ export class CTFDApiClient {
     
     while (hasMore) {
       const response = await this.makeRequest<any>(`${endpoint}?page=${page}`);
+      console.log(`Fetched page ${page} from ${endpoint}`, response);
       
       // Handle both array response and paginated response
       if (Array.isArray(response)) {
