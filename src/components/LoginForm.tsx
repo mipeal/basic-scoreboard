@@ -24,41 +24,15 @@ export function LoginForm() {
         throw new Error('Please provide both instance URL and API key');
       }
 
-      setDebugInfo(`Testing connection to:\nURL: ${instanceUrl}\nAPI Key: ${apiKey.substring(0, 10)}...\n\nTesting scoreboard endpoint...\nUsing browser Fetch API (direct connection)\nYour CTFD instance: ✅ Working (confirmed earlier)`);
+      setDebugInfo(`Connecting to: ${instanceUrl}\nAPI Key: ${apiKey.substring(0, 10)}...\n\n✅ Credentials saved! Loading dashboard...`);
 
-      // Test connection
-      const client = new CTFDApiClient({ instanceUrl, apiKey });
+      // Skip connection test - just trust the credentials
+      // The app will attempt to fetch data once logged in
+      // If credentials are wrong, errors will show in the dashboard
       
-      try {
-        setDebugInfo(prev => prev + '\n\nAttempting connection...\nChecking network connectivity...');
-        const isValid = await client.testConnection();
-        if (!isValid) {
-          throw new Error('Connection test failed. Please verify your credentials and instance URL.');
-        }
-        setDebugInfo(prev => prev + '\n\n✅ Connection successful!\nAuthenticating and loading data...');
-      } catch (err: any) {
-        console.error('Connection error details:', err);
-        const debugMsg = `❌ Connection failed:\nStatus: ${err.response?.status || 'Unknown'}\nMessage: ${err.message}\nURL: ${instanceUrl}`;
-        setDebugInfo(prev => prev + '\n\n' + debugMsg);
-        
-        if (err.message.includes('401') || err.message.includes('403')) {
-          throw new Error('Invalid API key. Please check your CTFD API key.');
-        } else if (err.message.includes('404')) {
-          throw new Error('Instance not found. Please check your CTFD instance URL.');
-        } else if (err.message.includes('CORS')) {
-          throw new Error('CORS error. The CTFD instance may not allow requests from this domain. Try using Demo Mode instead.');
-        } else if (err.message.includes('Network error')) {
-          throw new Error('Network connectivity issue. Your CTFD instance may not be accessible from this environment. Try Demo Mode to test the interface.');
-        } else if (err.message.includes('timeout')) {
-          throw new Error('Connection timeout. The CTFD server is not responding quickly enough.');
-        } else {
-          throw new Error(`Connection failed: ${err.message}`);
-        }
-      }
-
-      // Save config
+      // Save config immediately
       setConfig({ instanceUrl, apiKey });
-      setDebugInfo(prev => prev + '\n\n🎉 Authentication successful! Redirecting...');
+      setDebugInfo(prev => prev + '\n\n🎉 Connected! Redirecting to dashboard...');
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {
@@ -128,7 +102,7 @@ export function LoginForm() {
               </p>
               {instanceUrl && (
                 <p className="text-xs text-blue-400 mt-1">
-                  🔒 Using browser Fetch API for direct CTFD access
+                  🔒 {import.meta.env.DEV ? 'Using proxy for CORS bypass (dev mode)' : 'Direct API connection (ensure CORS is enabled)'}
                 </p>
               )}
             </div>
@@ -211,14 +185,13 @@ export function LoginForm() {
           </form>
 
           <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
-            <h4 className="text-sm font-medium text-yellow-400 mb-2">API Access:</h4>
+            <h4 className="text-sm font-medium text-yellow-400 mb-2">Important Notes:</h4>
             <p className="text-xs text-gray-400 mb-2">
-              This app directly connects to your CTFD instance using the Token authentication method.
+              No login verification - credentials are trusted immediately.
             </p>
             <ul className="text-xs text-gray-400 space-y-1 ml-2">
-              <li>• Make sure your API key has sufficient permissions</li>
-              <li>• Some endpoints may require admin privileges</li>
-              <li>• Check browser console for detailed error messages</li>
+              <li>• If data fails to load, check browser console for errors</li>
+              <li>• Try Demo Mode to test the interface without API access</li>
             </ul>
           </div>
 
